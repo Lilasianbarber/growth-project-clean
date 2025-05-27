@@ -1,16 +1,15 @@
-// app/page.tsx
-"use client";
+'use client';
 
-import { useState } from "react";
+import { useState } from 'react';
 
 export default function Home() {
-  const [task, setTask] = useState("");
+  const [task, setTask] = useState('');
   const [tasks, setTasks] = useState<string[]>([]);
 
   const handleAddTask = () => {
     if (task.trim()) {
       setTasks([...tasks, task.trim()]);
-      setTask("");
+      setTask('');
     }
   };
 
