@@ -1,48 +1,58 @@
-'use client';
+// app/page.tsx
+"use client";
 
-import { useState } from 'react';
+import { useState } from "react";
 
 export default function Home() {
+  const [task, setTask] = useState("");
   const [tasks, setTasks] = useState<string[]>([]);
-  const [input, setInput] = useState('');
 
-  const addTask = () => {
-    if (!input.trim()) return;
-    setTasks([...tasks, input]);
-    setInput('');
+  const handleAddTask = () => {
+    if (task.trim()) {
+      setTasks([...tasks, task.trim()]);
+      setTask("");
+    }
+  };
+
+  const handleRemoveTask = (index: number) => {
+    setTasks(tasks.filter((_, i) => i !== index));
   };
 
   return (
-    <main className="min-h-screen bg-black text-white p-8">
+    <main className="min-h-screen bg-black text-white p-6">
       <h1 className="text-3xl font-bold mb-4">The Growth Project Tracker</h1>
-      <p className="mb-6 text-gray-400">Enter a task and start tracking your moves.</p>
-
-      <div className="flex items-center gap-2 mb-6">
+      <p className="mb-4">Enter a task and start tracking your moves.</p>
+      <div className="flex gap-2 mb-6">
         <input
           type="text"
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
           placeholder="Add your task..."
-          className="p-2 rounded bg-gray-800 text-white w-full max-w-md"
+          value={task}
+          onChange={(e) => setTask(e.target.value)}
+          className="px-3 py-2 rounded bg-white text-black"
         />
         <button
-          onClick={addTask}
-          className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded"
+          onClick={handleAddTask}
+          className="bg-red-600 hover:bg-red-700 px-4 py-2 rounded"
         >
           Add
         </button>
       </div>
-
-      <div className="space-y-2">
-        {tasks.map((task, index) => (
-          <div
+      <ul className="space-y-2">
+        {tasks.map((t, index) => (
+          <li
             key={index}
-            className="bg-gray-800 p-3 rounded-md shadow text-white max-w-md"
+            className="flex justify-between items-center bg-gray-800 px-4 py-2 rounded"
           >
-            {task}
-          </div>
+            <span>{t}</span>
+            <button
+              onClick={() => handleRemoveTask(index)}
+              className="text-sm text-gray-400 hover:text-red-400"
+            >
+              Remove
+            </button>
+          </li>
         ))}
-      </div>
+      </ul>
     </main>
   );
 }
