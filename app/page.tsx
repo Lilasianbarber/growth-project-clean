@@ -1,10 +1,23 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function Home() {
   const [task, setTask] = useState('');
   const [tasks, setTasks] = useState<string[]>([]);
+
+  // Load tasks from localStorage on mount
+  useEffect(() => {
+    const storedTasks = localStorage.getItem('growth-tasks');
+    if (storedTasks) {
+      setTasks(JSON.parse(storedTasks));
+    }
+  }, []);
+
+  // Save tasks to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('growth-tasks', JSON.stringify(tasks));
+  }, [tasks]);
 
   const handleAddTask = () => {
     if (task.trim()) {
