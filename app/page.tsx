@@ -14,6 +14,7 @@ export default function Home() {
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
   const [tasks, setTasks] = useState<Task[]>([]);
 
+  // Load tasks from localStorage on mount
   useEffect(() => {
     const storedTasks = localStorage.getItem('growth-tasks');
     if (storedTasks) {
@@ -21,6 +22,7 @@ export default function Home() {
     }
   }, []);
 
+  // Save tasks to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('growth-tasks', JSON.stringify(tasks));
   }, [tasks]);
@@ -46,7 +48,7 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#0d0d0d] text-white px-6 py-10 font-sans">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-4xl font-bold mb-2 tracking-tight text-white">The Growth Project Tracker</h1>
+        <h1 className="text-4xl font-bold mb-2 tracking-tight">The Growth Project Tracker</h1>
         <p className="text-gray-400 mb-8">Track your ideas. Build your vision. Start with one task.</p>
 
         <div className="flex flex-col sm:flex-row gap-3 mb-6">
