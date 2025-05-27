@@ -2,9 +2,17 @@
 
 import { useState, useEffect } from 'react';
 
+interface Task {
+  text: string;
+  dueDate?: string;
+  priority?: 'low' | 'medium' | 'high';
+}
+
 export default function Home() {
   const [task, setTask] = useState('');
-  const [tasks, setTasks] = useState<string[]>([]);
+  const [dueDate, setDueDate] = useState('');
+  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   // Load tasks from localStorage on mount
   useEffect(() => {
@@ -21,8 +29,15 @@ export default function Home() {
 
   const handleAddTask = () => {
     if (task.trim()) {
-      setTasks([...tasks, task.trim()]);
+      const newTask: Task = {
+        text: task.trim(),
+        dueDate: dueDate || undefined,
+        priority,
+      };
+      setTasks([...tasks, newTask]);
       setTask('');
+      setDueDate('');
+      setPriority('medium');
     }
   };
 
@@ -36,7 +51,7 @@ export default function Home() {
         <h1 className="text-4xl font-bold mb-2 tracking-tight text-white">The Growth Project Tracker</h1>
         <p className="text-gray-400 mb-8">Track your ideas. Build your vision. Start with one task.</p>
 
-        <div className="flex items-center gap-3 mb-8">
+        <div className="flex flex-col sm:flex-row gap-3 mb-6">
           <input
             type="text"
             placeholder="What do you need to do?"
@@ -44,6 +59,21 @@ export default function Home() {
             onChange={(e) => setTask(e.target.value)}
             className="flex-1 px-4 py-3 rounded-xl bg-[#1a1a1a] border border-gray-700 placeholder-gray-500 text-white focus:outline-none focus:ring-2 focus:ring-red-600"
           />
+          <input
+            type="date"
+            value={dueDate}
+            onChange={(e) => setDueDate(e.target.value)}
+            className="px-4 py-3 rounded-xl bg-[#1a1a1a] border border-gray-700 text-white"
+          />
+          <select
+            value={priority}
+            onChange={(e) => setPriority(e.target.value as Task['priority'])}
+            className="px-4 py-3 rounded-xl bg-[#1a1a1a] border border-gray-700 text-white"
+          >
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+          </select>
           <button
             onClick={handleAddTask}
             className="px-5 py-3 bg-red-600 hover:bg-red-700 transition rounded-xl text-white font-medium"
@@ -56,12 +86,17 @@ export default function Home() {
           {tasks.map((t, index) => (
             <div
               key={index}
-              className="flex justify-between items-center bg-[#1a1a1a] border border-gray-700 px-4 py-3 rounded-xl shadow-sm"
+              className="flex flex-col sm:flex-row justify-between sm:items-center bg-[#1a1a1a] border border-gray-700 px-4 py-3 rounded-xl shadow-sm"
             >
-              <span className="text-white text-base">{t}</span>
+              <div>
+                <p className="text-white text-base font-medium">{t.text}</p>
+                <p className="text-sm text-gray-400">
+                  {t.dueDate && `Due: ${t.dueDate}`} {t.priority && `• Priority: ${t.priority}`}
+                </p>
+              </div>
               <button
                 onClick={() => handleRemoveTask(index)}
-                className="text-sm text-gray-400 hover:text-red-400 transition"
+                className="text-sm text-gray-400 hover:text-red-400 transition mt-2 sm:mt-0"
               >
                 Remove
               </button>
