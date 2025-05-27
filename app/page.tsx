@@ -2,16 +2,18 @@
 
 import { useState, useEffect } from 'react';
 
+type Priority = 'low' | 'medium' | 'high';
+
 interface Task {
   text: string;
   dueDate?: string;
-  priority?: 'low' | 'medium' | 'high';
+  priority?: Priority;
 }
 
 export default function Home() {
   const [task, setTask] = useState('');
   const [dueDate, setDueDate] = useState('');
-  const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
+  const [priority, setPriority] = useState<Priority>('medium');
   const [tasks, setTasks] = useState<Task[]>([]);
 
   // Load tasks from localStorage on mount
@@ -45,6 +47,12 @@ export default function Home() {
     setTasks(tasks.filter((_, i) => i !== index));
   };
 
+  const handlePriorityChange = (value: string) => {
+    if (value === 'low' || value === 'medium' || value === 'high') {
+      setPriority(value);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-[#0d0d0d] text-white px-6 py-10 font-sans">
       <div className="max-w-2xl mx-auto">
@@ -67,12 +75,7 @@ export default function Home() {
           />
           <select
             value={priority}
-            onChange={(e) => {
-              const selected = e.target.value;
-              if (selected === 'low' || selected === 'medium' || selected === 'high') {
-                setPriority(selected);
-              }
-            }}
+            onChange={(e) => handlePriorityChange(e.target.value)}
             className="px-4 py-3 rounded-xl bg-[#1a1a1a] border border-gray-700 text-white"
           >
             <option value="low">Low</option>
