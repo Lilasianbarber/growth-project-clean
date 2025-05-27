@@ -67,7 +67,9 @@ export default function Home() {
           />
           <select
             value={priority}
-            onChange={(e) => setPriority(e.target.value as Task['priority'])}
+            onChange={(e) =>
+              setPriority((e.target.value as Task['priority']) || 'medium')
+            }            
             className="px-4 py-3 rounded-xl bg-[#1a1a1a] border border-gray-700 text-white"
           >
             <option value="low">Low</option>
