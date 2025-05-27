@@ -14,7 +14,6 @@ export default function Home() {
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  // Load tasks from localStorage on mount
   useEffect(() => {
     const storedTasks = localStorage.getItem('growth-tasks');
     if (storedTasks) {
@@ -22,7 +21,6 @@ export default function Home() {
     }
   }, []);
 
-  // Save tasks to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('growth-tasks', JSON.stringify(tasks));
   }, [tasks]);
@@ -67,13 +65,12 @@ export default function Home() {
           />
           <select
             value={priority}
-            onChange={(e) =>
-              setPriority(
-                ['low', 'medium', 'high'].includes(e.target.value)
-                  ? (e.target.value as 'low' | 'medium' | 'high')
-                  : 'medium'
-              )
-            }                
+            onChange={(e) => {
+              const selected = e.target.value;
+              if (selected === 'low' || selected === 'medium' || selected === 'high') {
+                setPriority(selected);
+              }
+            }}
             className="px-4 py-3 rounded-xl bg-[#1a1a1a] border border-gray-700 text-white"
           >
             <option value="low">Low</option>
