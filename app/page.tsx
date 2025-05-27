@@ -7,7 +7,7 @@ type Priority = 'low' | 'medium' | 'high';
 interface Task {
   text: string;
   dueDate?: string;
-  priority?: Priority;
+  priority: Priority;
 }
 
 export default function Home() {
@@ -16,41 +16,37 @@ export default function Home() {
   const [priority, setPriority] = useState<Priority>('medium');
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  // Load tasks from localStorage on mount
   useEffect(() => {
-    const storedTasks = localStorage.getItem('growth-tasks');
-    if (storedTasks) {
-      setTasks(JSON.parse(storedTasks));
+    const stored = localStorage.getItem('growth-tasks');
+    if (stored) {
+      try {
+        const parsed: Task[] = JSON.parse(stored);
+        setTasks(parsed.filter(t => t.text));
+      } catch {
+        console.error('Failed to load tasks from localStorage');
+      }
     }
   }, []);
 
-  // Save tasks to localStorage whenever they change
   useEffect(() => {
     localStorage.setItem('growth-tasks', JSON.stringify(tasks));
   }, [tasks]);
 
   const handleAddTask = () => {
-    if (task.trim()) {
-      const newTask: Task = {
-        text: task.trim(),
-        dueDate: dueDate || undefined,
-        priority,
-      };
-      setTasks([...tasks, newTask]);
-      setTask('');
-      setDueDate('');
-      setPriority('medium');
-    }
+    if (!task.trim()) return;
+    const newTask: Task = {
+      text: task.trim(),
+      dueDate: dueDate || undefined,
+      priority,
+    };
+    setTasks([...tasks, newTask]);
+    setTask('');
+    setDueDate('');
+    setPriority('medium');
   };
 
   const handleRemoveTask = (index: number) => {
     setTasks(tasks.filter((_, i) => i !== index));
-  };
-
-  const handlePriorityChange = (value: string) => {
-    if (value === 'low' || value === 'medium' || value === 'high') {
-      setPriority(value);
-    }
   };
 
   return (
@@ -75,7 +71,12 @@ export default function Home() {
           />
           <select
             value={priority}
-            onChange={(e) => handlePriorityChange(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              if (value === 'low' || value === 'medium' || value === 'high') {
+                setPriority(value);
+              }
+            }}
             className="px-4 py-3 rounded-xl bg-[#1a1a1a] border border-gray-700 text-white"
           >
             <option value="low">Low</option>
